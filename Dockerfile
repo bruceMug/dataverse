@@ -11,6 +11,8 @@ RUN mvn -P api clean package
 # Production image with Payara
 FROM eclipse-temurin:17-jdk
 
+RUN apt-get update && apt-get install -y unzip
+
 # Install Payara Server
 ENV PAYARA_VERSION=5.2022.2
 RUN curl -L https://search.maven.org/remotecontent?filepath=fish/payara/distributions/payara/${PAYARA_VERSION}/payara-${PAYARA_VERSION}.zip -o /tmp/payara.zip && \
