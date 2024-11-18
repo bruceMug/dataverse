@@ -19,6 +19,12 @@ COPY --from=builder --chown=payara:payara /build/target/dataverse-*.war $DEPLOY_
 # Switch to payara user for security
 USER payara
 
+RUN echo "AS_ADMIN_PASSWORD=" > /tmp/pwd.txt && \
+    echo "AS_ADMIN_NEWPASSWORD=admin" >> /tmp/pwd.txt && \
+    asadmin --user=admin --passwordfile=/tmp/pwd.txt change-admin-password && \
+    asadmin --user=admin --passwordfile=/tmp/pwd.txt enable-secure-admin && \
+    rm /tmp/pwd.txt
+
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:8080/api/info/version || exit 1
@@ -26,9 +32,18 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
 # Default environment variables
 ENV LANG=en \
     DATAVERSE_JSF_REFRESH_PERIOD=1 \
-    DATAVERSE_FEATURE_API_BEARER_AUTH=1
+    DATAVERSE_FEATURE_API_BEARER_AUTH=1 \
+    DEPLOY_DIR=/opt/payara/deployments \
+    PAYARA_DIR=/opt/payara \
+    SCRIPT_DIR=/opt/payara/scripts \
+    PAYARA_ARGS="--debug"
 
 # Expose necessary ports
-EXPOSE 8080 4848 8686
+EXPOSE 8080 4848 8686 9009
 
-CMD ["asadmin", "start-domain", "--verbose"]
+# CMD ["asadmin", "start-domain", "--verbose"]
+
+COPY --chown=payara:payara docker-entrypoint.sh /opt/payara/scripts/
+RUN chmod +x /opt/payara/scripts/docker-entrypoint.sh
+
+ENTRYPOINT ["/opt/payara/scripts/docker-entrypoint.sh"]
