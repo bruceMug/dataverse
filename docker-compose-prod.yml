@@ -15,6 +15,7 @@ services:
       DATAVERSE_MAIL_MTA_HOST: ${MAIL_HOST}
       DATAVERSE_AUTH_OIDC_ENABLED: ${OIDC_ENABLED:-0}
       DATAVERSE_SPI_EXPORTERS_DIRECTORY: "/dv/exporters"
+      PAYARA_ARGS: "--debug"
       JVM_ARGS: >
         -Ddataverse.files.storage-driver-id=file1
         -Ddataverse.files.file1.type=file
@@ -29,6 +30,8 @@ services:
         -Ddataverse.lang.directory=/dv/lang
     ports:
       - "8080:8080"
+      - "4848:4848"  # Add admin console port
+      - "9009:9009"
     networks:
       - dataverse
     depends_on:
@@ -38,6 +41,12 @@ services:
       - dataverse_data:/dv
       - dataverse_secrets:/secrets
       - storage_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/info/version"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 60s
     mem_limit: 4g
     mem_reservation: 2g
 
@@ -53,6 +62,11 @@ services:
       - dataverse
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATAVERSE_DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   solr:
     container_name: "prod_solr"
@@ -68,6 +82,11 @@ services:
     volumes:
       - solr_data:/var/solr
       - solr_conf:/template
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8983/solr/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   smtp:
     container_name: "prod_smtp"
