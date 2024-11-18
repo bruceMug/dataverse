@@ -6,7 +6,7 @@ COPY . .
 RUN mvn -P api clean package
 
 # Production stage
-FROM payara/server-full:5.2022.2-jdk17
+FROM payara/server-full:6.2023.12-jdk17
 
 # Create necessary directories
 USER root
