@@ -18,10 +18,10 @@ body .ui-widget {font-size: inherit;}
 .panelgridHeaderTable .ui-widget-content, .panelgridHeaderTable .ui-widget-content > td {border:0; background:none;}
 .panelgridHeaderTable .ui-widget-content > td:last-child table {margin-left:auto;}
 
-#navbarFixed.navbar-fixed-top {margin-bottom:0; z-index:9999;}
-#navbarFixed .navbar-brand {color:#C55B28; padding-left:32px;}
+#navbarFixed.navbar-fixed-top {margin-bottom:0; z-index:9999; border-radius: 10px;}
+#navbarFixed .navbar-brand {color:#151829; padding-left:32px;}
 #navbarFixed .navbar-brand.custom-logo {height:auto; padding:0;}
-#navbarFixed .icon-dataverse {color:#C55B28; font-size:28px; margin: -4px 0 0 -27px; position: absolute;}
+#navbarFixed .icon-dataverse {color:#151829; font-size:28px; margin: -4px 0 0 -27px; position: absolute;}
 #navbarFixed .dropdown.accountName a:focus {outline: -webkit-focus-ring-color 5px auto;}
 #navbarFixed form.navbar-form.navbar-form-link {margin:0; padding:0;}
 #navbarFixed form.navbar-form-link a.ui-commandlink, #navbarFixed ul.navbar-nav li.dropdown span.dropdown-toggle {display:block; padding:15px; color: #777;}
@@ -45,11 +45,13 @@ body .ui-widget {font-size: inherit;}
 #navbarFixed .dropdown.accountName .logout form {margin:0; padding:0; width:100%;}
 #navbarFixed .dropdown.accountName .logout a {clear: both; color: #333333; display: block; font-weight: normal; line-height: 1.42857; padding: 3px 20px; white-space: nowrap; text-decoration: none;}
 #navbarFixed li.dropdown.open > span.dropdown-toggle {background-color: #e7e7e7;}
+/*#navbarFixed .navbar-nav > li > a {color: #1a1a2e;} */
 
 #status-alert {margin-top:0; margin-bottom:0;}
 #status-alert div.alert {border:0; box-shadow:none;}
 
-footer {height:0px; color:#767676;}
+/* footer {height:0px; color:#767676;} */
+footer {height: 0px; color: #1a1a2e;}
 #dvfooter {padding-top:60px;}
 #dvfooter.widget-view {position:fixed; left:0; bottom:0; margin:0; padding:4px 0 0 0; min-height:44p; height:auto; background:#fff;}
 #dvfooter .poweredbylogo {text-align:right;}
@@ -92,7 +94,7 @@ td.col-select-width, th.col-select-width {width:36px;}
 .text-file {color:#777777;}
 
 .italic {font-style: italic;}
-.margin-top {margin-top:1em;}
+.margin-top {margin-top:2em;}
 .margin-top-half {margin-top:.5em;}
 .margin-bottom {margin-bottom:1em;}
 .margin-bottom-half {margin-bottom:.5em;}
@@ -526,7 +528,7 @@ table.ui-panelgrid.facetsMoreLess tr.ui-widget-content {border:0;}
 table.ui-panelgrid.facetsMoreLess td {width:50%; border:0;}
 table.ui-panelgrid.facetsMoreLess td:last-child {text-align:right;}
 
-#dv-main div.emptyResults.bg-warning {background:#FCF8F2; padding:.5em 1em;}
+#dv-main div.emptyResults.bg-warning {background:#FCF8F2; padding:.5em 1em; border-radius: 10px; text-align: center;}
 #resultsFacetsTopBlock {margin-bottom:.5em;}
 #resultsFacetsTopBlock a.facetLink.facetSelected {display:inline-block; margin-bottom:.5em; margin-right:1em; background-color:#E6F1F6; padding-left:.3em; padding-right:.3em;}
 
@@ -534,8 +536,8 @@ table.ui-panelgrid.facetsMoreLess td:last-child {text-align:right;}
 #dv-main div.results-sort-pagination.results-bottom .pagination {margin-top:0; margin-bottom:0;}
 
 table[id$='resultsTable'] td > div {border:1px solid grey; margin:6px 0; padding: 4px 10px;}
-table[id$='resultsTable'] td > div.dataverseResult {border-color:#c55b28;}
-table[id$='resultsTable'] td > div.datasetResult {border-color:#428bca;}
+table[id$='resultsTable'] td > div.dataverseResult {border-color:#c55b28; border: 1px solid #3ebaeb3d;}
+table[id$='resultsTable'] td > div.datasetResult {border-color:#428bca; border: 1px solid #3ebaeb3d;}
 table[id$='resultsTable'] td > div > div.card-title-icon-block, 
 table[id$='resultsTable'] td > div > div.card-preview-icon-block, 
 table[id$='resultsTable'] td > div > div.file-tags-block {
@@ -1184,7 +1186,7 @@ span.label-danger { background-color: #D3413C }
 span.label-default { background-color: #757575 }
 .dropdown-header { color:#757575 }
 
-.login-container h1 { font-size:30px; }
+.login-container h2 { font-size:30px; margin-bottom: 7%;}
 #embargoInputs label { font-weight: normal; }
 
 /*Template Instructions Editing*/
