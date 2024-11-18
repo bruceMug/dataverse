@@ -3,7 +3,7 @@ name: 'Deploy to Beta Testing'
 on:
   push:
     branches:
-      - develop
+      - disabled-branch  # This branch doesn't exist, so workflow won't run
 
 jobs:
   build:
