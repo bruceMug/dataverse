@@ -19,8 +19,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      # Run tests separately
+      - name: Run tests
+        run: mvn -Pct test
+
       - name: Build with Maven
-        run: mvn -Pct clean package -Ddocker.skip
+        run: mvn -Pct clean package -Ddocker.skip -DskipTests
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -46,15 +50,6 @@ jobs:
           key: ${{ secrets.GCP_SSH_KEY }}
           script: |
             cd ~/Documents/dataverse
-            
-            # Create or update .env file
-            cat << EOF > .env
-            APP_IMAGE=${{ secrets.DOCKER_USERNAME }}/dataverse:latest
-            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-            DATAVERSE_DB_USER=${{ secrets.DATAVERSE_DB_USER }}
-            MAIL_SYSTEM_EMAIL=${{ secrets.MAIL_SYSTEM_EMAIL }}
-            MAIL_HOST=${{ secrets.MAIL_HOST }}
-            EOF
             
             # Pull latest images and restart containers
             docker-compose -f docker-compose-prod.yml pull
