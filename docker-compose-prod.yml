@@ -1,0 +1,87 @@
+services:
+  dataverse:
+    container_name: "prod_dataverse"
+    hostname: dataverse
+    image: ${APP_IMAGE}
+    restart: always
+    user: payara
+    environment:
+      DATAVERSE_DB_HOST: postgres
+      DATAVERSE_DB_PASSWORD: ${DB_PASSWORD}
+      DATAVERSE_DB_USER: ${DATAVERSE_DB_USER}
+      DATAVERSE_MAIL_SYSTEM_EMAIL: ${MAIL_SYSTEM_EMAIL}
+      DATAVERSE_MAIL_MTA_HOST: ${MAIL_HOST}
+      DATAVERSE_AUTH_OIDC_ENABLED: ${OIDC_ENABLED:-0}
+      DATAVERSE_SPI_EXPORTERS_DIRECTORY: "/dv/exporters"
+      JVM_ARGS: >
+        -Ddataverse.files.storage-driver-id=file1
+        -Ddataverse.files.file1.type=file
+        -Ddataverse.files.file1.label=Filesystem
+        -Ddataverse.files.file1.directory=/data/store
+        -Ddataverse.pid.providers=fake
+        -Ddataverse.pid.default-provider=fake
+        -Ddataverse.pid.fake.type=FAKE
+        -Ddataverse.pid.fake.label=FakeDOIProvider
+        -Ddataverse.pid.fake.authority=10.5072
+        -Ddataverse.pid.fake.shoulder=FK2/
+        -Ddataverse.lang.directory=/dv/lang
+    ports:
+      - "8080:8080"
+    networks:
+      - dataverse
+    depends_on:
+      - postgres
+      - solr
+    volumes:
+      - dataverse_data:/dv
+      - dataverse_secrets:/secrets
+      - storage_data:/data
+    mem_limit: 4g
+    mem_reservation: 2g
+
+  postgres:
+    container_name: "prod_postgres"
+    hostname: postgres
+    image: postgres:13
+    restart: always
+    environment:
+      - POSTGRES_USER=${DATAVERSE_DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    networks:
+      - dataverse
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  solr:
+    container_name: "prod_solr"
+    hostname: "solr"
+    image: solr:8.11
+    restart: always
+    command:
+      - "solr-precreate"
+      - "collection1"
+      - "/template"
+    networks:
+      - dataverse
+    volumes:
+      - solr_data:/var/solr
+      - solr_conf:/template
+
+  smtp:
+    container_name: "prod_smtp"
+    hostname: "smtp"
+    image: mailhog/mailhog  # For production, replace with your actual SMTP server
+    networks:
+      - dataverse
+
+networks:
+  dataverse:
+    driver: bridge
+
+volumes:
+  dataverse_data:
+  dataverse_secrets:
+  storage_data:
+  postgres_data:
+  solr_data:
+  solr_conf:
