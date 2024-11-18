@@ -19,11 +19,11 @@ COPY --from=builder --chown=payara:payara /build/target/dataverse-*.war $DEPLOY_
 # Switch to payara user for security
 USER payara
 
-RUN echo "AS_ADMIN_PASSWORD=" > /tmp/pwd.txt && \
-    echo "AS_ADMIN_NEWPASSWORD=admin" >> /tmp/pwd.txt && \
-    asadmin --user=admin --passwordfile=/tmp/pwd.txt change-admin-password && \
-    asadmin --user=admin --passwordfile=/tmp/pwd.txt enable-secure-admin && \
-    rm /tmp/pwd.txt
+# RUN echo "AS_ADMIN_PASSWORD=" > /tmp/pwd.txt && \
+#     echo "AS_ADMIN_NEWPASSWORD=admin" >> /tmp/pwd.txt && \
+#     asadmin --user=admin --passwordfile=/tmp/pwd.txt change-admin-password && \
+#     asadmin --user=admin --passwordfile=/tmp/pwd.txt enable-secure-admin && \
+#     rm /tmp/pwd.txt
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
