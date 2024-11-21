@@ -77,6 +77,11 @@ fi
 
 echo "Booting now..."
 
+echo "DEBUG: OUTPUT content:"
+echo "$OUTPUT"
+echo "DEBUG: JVM_ARGS content:"
+echo "$JVM_ARGS"
+
 COMMAND=$(echo "$OUTPUT"\
  | sed -n -e '2,/^$/p'\
  | sed "s|glassfish.jar|glassfish.jar $JVM_ARGS |g")
