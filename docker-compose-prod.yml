@@ -5,19 +5,21 @@ services:
     container_name: "prod_dataverse"
     hostname: dataverse
     image: ${APP_IMAGE}
-    restart: always
+    restart: on-failure
     user: payara
     environment:
       DATAVERSE_DB_HOST: postgres
       DATAVERSE_DB_PASSWORD: ${DB_PASSWORD}
       DATAVERSE_DB_USER: ${DATAVERSE_DB_USER}
+      ENABLE_JDWP: "1"
+      ENABLE_RELOAD: "1"
+      SKIP_DEPLOY: "${SKIP_DEPLOY}"
       DATAVERSE_MAIL_SYSTEM_EMAIL: ${MAIL_SYSTEM_EMAIL}
       DATAVERSE_MAIL_MTA_HOST: ${MAIL_HOST}
       DATAVERSE_AUTH_OIDC_ENABLED: ${OIDC_ENABLED:-0}
       DATAVERSE_SPI_EXPORTERS_DIRECTORY: "/dv/exporters"
       PAYARA_ARGS: "--debug"
-      JVM_ARGS: >
-        -Ddataverse.files.storage-driver-id=file1
+      JVM_ARGS: -Ddataverse.files.storage-driver-id=file1
         -Ddataverse.files.file1.type=file
         -Ddataverse.files.file1.label=Filesystem
         -Ddataverse.files.file1.directory=/data/store
@@ -53,13 +55,15 @@ services:
   postgres:
     container_name: "prod_postgres"
     hostname: postgres
-    image: postgres:13
-    restart: always
+    image: postgres:${POSTGRES_VERSION}
+    restart: on-failure
     environment:
       - POSTGRES_USER=${DATAVERSE_DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     networks:
       - dataverse
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -71,8 +75,8 @@ services:
   solr:
     container_name: "prod_solr"
     hostname: "solr"
-    image: solr:8.11
-    restart: always
+    image: solr:${SOLR_VERSION}
+    restart: on-failure
     command:
       - "solr-precreate"
       - "collection1"
@@ -91,7 +95,8 @@ services:
   smtp:
     container_name: "prod_smtp"
     hostname: "smtp"
-    image: mailhog/mailhog  # For production, replace with your actual SMTP server
+    image: maildev/maildev:2.0.5  # For production, replace with your actual SMTP server
+    restart: on-failure
     networks:
       - dataverse
 
