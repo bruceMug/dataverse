@@ -17,6 +17,11 @@ RUN mkdir -p /dv/exporters /dv/lang /data/store /secrets && \
 COPY --from=builder --chown=payara:payara /build/target/dataverse-*.war $DEPLOY_DIR/dataverse.war
 COPY --from=builder /build/scripts/api /opt/payara/scripts
 
+COPY --chown=payar:payara scripts/* /opt/dataverse/scripts/
+
+COPY --chown=payara:payara conf/default/* /opt/dataverse/default/
+COPY --chown=payara:payara conf/lang/* /dv/lang/
+
 # Switch to payara user for security
 USER payara
 
