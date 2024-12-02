@@ -3,7 +3,7 @@ FROM maven:3.8-eclipse-temurin-17 AS builder
 
 WORKDIR /build
 COPY . .
-RUN mvn -Pct clean package -DskipTests
+RUN mvn -Pct clean package -DskipTests -Ddocker.skip
 
 # Production stage
 FROM payara/server-full:6.2023.12-jdk17
