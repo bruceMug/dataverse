@@ -5,6 +5,8 @@ WORKDIR /build
 COPY . .
 RUN mvn -Pct clean package -DskipTests -Ddocker.skip
 
+RUN echo -e "\e[1;32m===== Listing the /build/target Directory =====\e[0m" && ls -l /build/target
+
 # Production stage
 FROM payara/server-full:6.2023.12-jdk17
 
@@ -13,11 +15,12 @@ USER root
 RUN mkdir -p /dv/exporters /dv/lang /data/store /secrets && \
     chown -R payara:payara /dv /data /secrets
 
+# Use scripts from Payara image
+ENV SCRIPT_DIR=/opt/payara/scripts \
+    DEPLOY_DIR=/opt/payara/deployments
+
 # Copy application from builder
 COPY --from=builder --chown=payara:payara /build/target/dataverse-*.war $DEPLOY_DIR/dataverse.war
-
-# Use scripts from Payara image
-ENV SCRIPT_DIR=/opt/payara/scripts
 
 # Switch to payara user for security
 USER payara
@@ -30,7 +33,6 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
 ENV LANG=en \
     DATAVERSE_JSF_REFRESH_PERIOD=1 \
     DATAVERSE_FEATURE_API_BEARER_AUTH=1 \
-    DEPLOY_DIR=/opt/payara/deployments \
     PAYARA_ARGS="--debug"
 
 # Expose necessary ports
