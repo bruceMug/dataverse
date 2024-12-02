@@ -20,7 +20,7 @@ ENV SCRIPT_DIR=/opt/payara/scripts \
     DEPLOY_DIR=/opt/payara/deployments
 
 # Copy application from builder
-COPY --from=builder --chown=payara:payara /build/target/dataverse-*.war $DEPLOY_DIR/dataverse.war
+COPY --from=builder --chown=payara:payara /build/target/dataverse-*.jar $DEPLOY_DIR/dataverse.jar
 
 # Switch to payara user for security
 USER payara
