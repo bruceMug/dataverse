@@ -48,6 +48,7 @@ jobs:
               with:
                   username: ${{ secrets.DOCKER_USERNAME }}
                   password: ${{ secrets.DOCKER_PASSWORD }}
+              run: echo "${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin"
 
             # In case this is a push to develop, we care about buildtime.
             # Configure a remote ARM64 build host in addition to the local AMD64 in two steps.
@@ -99,13 +100,13 @@ jobs:
               id: develop-tag
               if: ${{ github.ref_name == env.DEVELOPMENT_BRANCH }}
               run: |
-                echo "tag-options=-Ddocker.tags.develop=unstable -Ddocker.tags.upcoming=${BASE_IMAGE_UPCOMING#*:}" | tee -a "${GITHUB_OUTPUT}"
+                echo "tag-options=-Ddocker.tags.develop=alpha -Ddocker.tags.upcoming=${BASE_IMAGE_UPCOMING#*:}" | tee -a "${GITHUB_OUTPUT}"
 
             - name: Deploy multi-arch base container image to Docker Hub
               id: build
               run: |
                 mvn -f modules/container-base -Pct deploy -Ddocker.noCache -Ddocker.platforms=${{ env.PLATFORMS }} \
-                  -Ddocker.imagePropertyConfiguration=override ${{ steps.develop-tag.outputs.tag-options }} ${{ steps.revision-tag.outputs.tag-options }}
+                  -Ddocker.imagePropertyConfiguration=override -Ddocker.tags.develop=alpha -Ddocker.tags.upcoming=${BASE_IMAGE_UPCOMING#*:}
 
             - name: Determine appropriate base image ref for app image
               id: finalize
