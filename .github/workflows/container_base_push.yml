@@ -31,13 +31,13 @@ jobs:
             contents: read
             packages: read
         # Only run in upstream repo - avoid unnecessary runs in forks
-        if: ${{ github.repository_owner == 'IQSS' }}
+        if: ${{ github.repository_owner == 'brucemug' }}
         outputs:
           base-image-ref: ${{ steps.finalize.outputs.base-image-ref }}
 
         steps:
             - name: Checkout and Setup Maven
-              uses: IQSS/dataverse/.github/actions/setup-maven@develop
+              uses: brucemug/dataverse/.github/actions/setup-maven@develop
               with:
                 pom-paths: modules/container-base/pom.xml
 
@@ -127,4 +127,5 @@ jobs:
             - build
         uses: ./.github/workflows/container_app_push.yml
         with:
-          base-image-ref: ${{ needs.build.outputs.base-image-ref }}
+          # base-image-ref: ${{ needs.build.outputs.base-image-ref }}
+          base-image-ref: gdcc/dataverse-bru:alpha
