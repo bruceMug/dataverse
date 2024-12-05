@@ -3,7 +3,8 @@ name: Dataverse CI/CD
 on:
   push:
     branches:
-      - develop
+    # since that branch doesn't exist, it won't trigger the workflow
+      - develops
 
 jobs:
   build-and-deploy:
