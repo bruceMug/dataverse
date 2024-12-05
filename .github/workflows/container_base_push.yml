@@ -51,33 +51,33 @@ jobs:
 
             # In case this is a push to develop, we care about buildtime.
             # Configure a remote ARM64 build host in addition to the local AMD64 in two steps.
-            - name: Setup SSH agent
-              if: ${{ github.event_name != 'schedule' }}
-              uses: webfactory/ssh-agent@v0.9.0
-              with:
-                  ssh-private-key: ${{ secrets.BUILDER_ARM64_SSH_PRIVATE_KEY }}
-            - name: Provide the known hosts key and the builder config
-              if: ${{ github.event_name != 'schedule' }}
-              run: |
-                  echo "${{ secrets.BUILDER_ARM64_SSH_HOST_KEY }}" > ~/.ssh/known_hosts
-                  mkdir -p modules/container-base/target/buildx-state/buildx/instances
-                  cat > modules/container-base/target/buildx-state/buildx/instances/maven << EOF
-                  { "Name": "maven",
-                    "Driver": "docker-container",
-                    "Dynamic": false,
-                    "Nodes": [{"Name": "maven0",
-                               "Endpoint": "unix:///var/run/docker.sock",
-                               "Platforms": [{"os": "linux", "architecture": "amd64"}],
-                               "DriverOpts": null,
-                               "Flags": ["--allow-insecure-entitlement=network.host"],
-                               "Files": null},
-                              {"Name": "maven1",
-                               "Endpoint": "ssh://${{ secrets.BUILDER_ARM64_SSH_CONNECTION }}",
-                               "Platforms": [{"os": "linux", "architecture": "arm64"}],
-                               "DriverOpts": null,
-                               "Flags": ["--allow-insecure-entitlement=network.host"],
-                               "Files": null}]}
-                  EOF
+            # - name: Setup SSH agent
+            #   if: ${{ github.event_name != 'schedule' }}
+            #   uses: webfactory/ssh-agent@v0.9.0
+            #   with:
+            #       ssh-private-key: ${{ secrets.BUILDER_ARM64_SSH_PRIVATE_KEY }}
+            # - name: Provide the known hosts key and the builder config
+            #   if: ${{ github.event_name != 'schedule' }}
+            #   run: |
+            #       echo "${{ secrets.BUILDER_ARM64_SSH_HOST_KEY }}" > ~/.ssh/known_hosts
+            #       mkdir -p modules/container-base/target/buildx-state/buildx/instances
+            #       cat > modules/container-base/target/buildx-state/buildx/instances/maven << EOF
+            #       { "Name": "maven",
+            #         "Driver": "docker-container",
+            #         "Dynamic": false,
+            #         "Nodes": [{"Name": "maven0",
+            #                    "Endpoint": "unix:///var/run/docker.sock",
+            #                    "Platforms": [{"os": "linux", "architecture": "amd64"}],
+            #                    "DriverOpts": null,
+            #                    "Flags": ["--allow-insecure-entitlement=network.host"],
+            #                    "Files": null},
+            #                   {"Name": "maven1",
+            #                    "Endpoint": "ssh://${{ secrets.BUILDER_ARM64_SSH_CONNECTION }}",
+            #                    "Platforms": [{"os": "linux", "architecture": "arm64"}],
+            #                    "DriverOpts": null,
+            #                    "Flags": ["--allow-insecure-entitlement=network.host"],
+            #                    "Files": null}]}
+            #       EOF
 
             # Determine the base image name we are going to use from here on
             - name: Determine base image name
